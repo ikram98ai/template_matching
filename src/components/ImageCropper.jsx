@@ -2,13 +2,13 @@ import React, { useRef } from "react";
 import { Cropper } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 
-const ImageCropper = ({ image, setCroppedSymbol }) => {
+const ImageCropper = ({ image, setCroppedImage }) => {
   const cropperRef = useRef(null);
 
   const handleCrop = () => {
     const cropper = cropperRef.current.cropper;
     const croppedImage = cropper.getCroppedCanvas().toDataURL();
-    if (croppedImage) setCroppedSymbol(croppedImage); // Set the cropped image as a data URL
+    if (croppedImage) setCroppedImage(croppedImage); // Set the cropped image as a data URL
   };
 
   return (

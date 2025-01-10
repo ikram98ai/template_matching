@@ -75,8 +75,8 @@ resource "aws_iam_role_policy_attachment" "lambda_basic" {
 
 # API Gateway
 resource "aws_api_gateway_rest_api" "api" {
-  name        = "travel_chatbot_api_gateway"
-  description = "Travel Assistant API Gateway"
+  name        = "template_matching_api_gateway"
+  description = "Template matching API Gateway"
 
   endpoint_configuration {
     types = ["REGIONAL"]
@@ -87,7 +87,7 @@ resource "aws_api_gateway_rest_api" "api" {
 resource "aws_api_gateway_resource" "api_resource" {
   rest_api_id = aws_api_gateway_rest_api.api.id
   parent_id   = aws_api_gateway_rest_api.api.root_resource_id
-  path_part   = "chat"
+  path_part   = "detect"
 }
 
 # API Gateway Methods and Integrations
@@ -125,6 +125,8 @@ resource "aws_api_gateway_method_response" "options_200" {
     "method.response.header.Access-Control-Allow-Headers" = true
     "method.response.header.Access-Control-Allow-Methods" = true
     "method.response.header.Access-Control-Allow-Origin"  = true
+    "method.response.header.Access-Control-Allow-Credentials" = true  # Add this
+
   }
 }
 
@@ -139,6 +141,7 @@ resource "aws_api_gateway_integration" "options_integration" {
   }
 }
 
+
 resource "aws_api_gateway_integration_response" "options_integration_response" {
   rest_api_id = aws_api_gateway_rest_api.api.id
   resource_id = aws_api_gateway_resource.api_resource.id
@@ -149,6 +152,8 @@ resource "aws_api_gateway_integration_response" "options_integration_response" {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
     "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS,POST,PUT'"
     "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+    "method.response.header.Access-Control-Allow-Credentials" = "'true'"  # Add this
+
   }
 
   depends_on = [
@@ -156,13 +161,32 @@ resource "aws_api_gateway_integration_response" "options_integration_response" {
   ]
 }
 
+# Add response for POST method
+resource "aws_api_gateway_method_response" "post_200" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.api_resource.id
+  http_method = aws_api_gateway_method.api_method.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Headers" = true
+  }
+}
+
+
+
 # API Gateway Deployment
 resource "aws_api_gateway_deployment" "api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.api.id
 
   depends_on = [
     aws_api_gateway_integration.api_integration,
-    aws_api_gateway_integration.options_integration
+    aws_api_gateway_integration.options_integration,
+    aws_api_gateway_method_response.options_200,
+    aws_api_gateway_method_response.post_200,
+    aws_api_gateway_integration_response.options_integration_response
   ]
 
   lifecycle {
