@@ -4,6 +4,7 @@ import ImageCropper from "./ImageCropper"
 import ZoomableImage from "./ZoomableImage";
 import axios from "axios";
 import Spinner from "./Spinner";
+import { FaTrash } from "react-icons/fa"; // FontAwesome trash icon
 
 function DetectionScreen({ pdfs }) {
   const [images, setImages] = useState({ index: null, blueprint: null });
@@ -67,10 +68,12 @@ function DetectionScreen({ pdfs }) {
   };
 
   const addCroppedSymbol = ()=>{
-
     setCroppedSymbols((prevCroppedSymbols)=> [croppedSymbol, ...prevCroppedSymbols])
   }
 
+  const removeCroppedSymbol = (index)=>{
+    setCroppedSymbols((prevCroppedSymbols)=> prevCroppedSymbols.filter((_,i)=> i !== index))
+  }
   return (
   <>
     {isLoading && <Spinner />}
@@ -100,11 +103,25 @@ function DetectionScreen({ pdfs }) {
             +
           </button>
         </div>
-        {croppedSymbols && (
-          croppedSymbols.map((symbol,i)=> 
-            <img key={i} src={symbol} alt="Cropped Symbol" className="w-32 h-32 border-2 rounded-lg object-contain" />
-          )
-        )}
+        {croppedSymbols &&
+        croppedSymbols.map((symbol, i) => (
+          <div key={i} className="relative w-32 h-32">
+            {/* Image */}
+            <img
+              src={symbol}
+              alt={`Cropped Symbol ${i}`}
+              className="w-full h-full border-2 rounded-lg object-contain"
+            />
+            {/* Trash Icon */}
+            <button
+              onClick={() => removeCroppedSymbol(i)}
+              className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full shadow hover:bg-red-600"
+              title="Remove symbol"
+            >
+              <FaTrash />
+            </button>
+          </div>
+        ))}
       </div>
 
       {croppedSymbol && <button className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600" onClick={handleDetect}>Detect</button>}
