@@ -40,15 +40,6 @@ class SymbolDetectionService:
         ]
         return color_palette[index % len(color_palette)]
     
-    # def generate_color(self) -> Tuple[int, int, int]:
-    #     while True:
-    #         # Generate a random color
-    #         color = tuple(random.randint(0, 200) for _ in range(3))  # Avoid too light colors
-    #         # Ensure the color is not too close to white or previously used colors
-    #         if all(abs(color[i] - 255) > 50 for i in range(3)) and color not in self.used_colors:
-    #             self.used_colors.append(color)
-    #             return color
-            
     def bytes_to_img(self, image_bytes: bytes):
             # Convert bytes to numpy array
             nparr = np.frombuffer(image_bytes, np.uint8)
@@ -87,7 +78,7 @@ class SymbolDetectionService:
             for symbol_idx, symbol_bytes in enumerate(symbols_bytes):
                 symbol_processed = self.preprocess_image(symbol_bytes)
                 
-                result = cv2.matchTemplate(target_processed, symbol_processed, cv2.TM_CCOEFF_NORMED)
+                result = cv2.matchTemplate(target_processed, symbol_processed, cv2.TM_CCORR_NORMED)
                 
                 h, w = symbol_processed.shape
                 locations = np.where(result >= self.threshold)
@@ -161,27 +152,12 @@ class SymbolDetectionService:
         return marked_img
 
     def encode_image(self,image:np.ndarray):
-           # Convert BGR (OpenCV) to RGB
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    
-        # Convert numpy array to PIL Image
         img_pil = Image.fromarray(image_rgb)
-    
-        # Save to BytesIO buffer
         buffer = BytesIO()
         img_pil.save(buffer, format='PNG')
-    
-        # Encode to base64
         return base64.b64encode(buffer.getvalue()).decode()
         
-        # # Convert numpy array to PIL Image
-        # img_pil = Image.fromarray(image)
-        # # Save to BytesIO buffer
-        # buffer = BytesIO()
-        # img_pil.save(buffer, format='PNG')
-        # # Encode to base64
-        # return base64.b64encode(buffer.getvalue()).decode()
-
 
 
 headers = {

@@ -13,6 +13,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@techstark/opencv-js": "^4.10.0-release.1",
     "axios": "^1.7.9",
     "cropperjs": "^1.6.2",
     "konva": "^9.3.18",
