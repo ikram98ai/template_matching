@@ -38,3 +38,4 @@ export const  readImageAsBase64 = async (file) => {
         });
     else null
 }
+
