@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 .terraform*
 terraform.*
-apitest/
+exp/

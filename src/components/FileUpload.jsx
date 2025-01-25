@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 
-function FileUpload({ setPdfs }) {
-  const [files, setFiles] = useState({
+function FileUpload({ setFiles }) {
+  const [file, setFile] = useState({
     index: null,
     blueprint: null,
   });
@@ -11,11 +11,8 @@ function FileUpload({ setPdfs }) {
 
   const onDrop = useCallback((acceptedFiles, fileType) => {
     const file = acceptedFiles[0];
-    if (file?.type !== "application/pdf") {
-      setError("Please upload PDF files only");
-      return;
-    }
-    setFiles((prev) => ({
+  
+    setFile((prev) => ({
       ...prev,
       [fileType]: file,
     }));
@@ -25,7 +22,7 @@ function FileUpload({ setPdfs }) {
   const { getRootProps: getIndexProps, getInputProps: getIndexInputProps } =
     useDropzone({
       onDrop: (files) => onDrop(files, "index"),
-      accept: { "application/pdf": [".pdf"] },
+      accept: { "application/pdf": [".pdf",], 'image/*': ['.png','.jpeg','.jpg'], },
       maxFiles: 1,
     });
 
@@ -34,16 +31,16 @@ function FileUpload({ setPdfs }) {
     getInputProps: getBlueprintInputProps,
   } = useDropzone({
     onDrop: (files) => onDrop(files, "blueprint"),
-    accept: { "application/pdf": [".pdf"] },
+    accept: { "application/pdf": [".pdf",], 'image/*': ['.png','.jpeg','.jpg'], },
     maxFiles: 1,
   });
 
   const handleUpload = async () => {
-    if (!files.index || !files.blueprint) {
-      setError("Please upload both index and blueprint PDF files");
+    if (!file.index ) {
+      setError("Please upload index PDF/Image file");
       return;
     }
-    setPdfs(files);
+    setFiles(file);
   };
 
   return (
@@ -55,9 +52,9 @@ function FileUpload({ setPdfs }) {
         >
           <input {...getIndexInputProps()} />
           <p className="text-gray-600">
-            {files.index
-              ? files.index.name
-              : "Drop index PDF here or click to select"}
+            {file.index
+              ? file.index.name
+              : "Drop index PDF/Image here or click to select"}
           </p>
         </div>
 
@@ -67,9 +64,9 @@ function FileUpload({ setPdfs }) {
         >
           <input {...getBlueprintInputProps()} />
           <p className="text-gray-600">
-            {files.blueprint
-              ? files.blueprint.name
-              : "Drop blueprint PDF here or click to select"}
+            {file.blueprint
+              ? file.blueprint.name
+              : "Drop blueprint PDF/Image here or click to select"}
           </p>
         </div>
 
@@ -77,7 +74,7 @@ function FileUpload({ setPdfs }) {
 
         <button
           onClick={handleUpload}
-          disabled={!files.index || !files.blueprint}
+          disabled={!file.index }
           className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 disabled:bg-gray-400"
         >
           Upload Files

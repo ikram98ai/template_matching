@@ -1,8 +1,8 @@
 import * as pdfjsLib from 'pdfjs-dist';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =  `${import.meta.env.BASE_URL}/pdf.worker.min.mjs`;
-export const pdfToImage = async (pdfFile) => {
 
+export const pdfToImage = async (pdfFile) => {
     try {
         const fileReader = new FileReader();
         const pdfBytes = await new Promise((resolve, reject) => {
@@ -27,3 +27,14 @@ export const pdfToImage = async (pdfFile) => {
         return null;
     }
 };
+
+export const  readImageAsBase64 = async (file) => {
+    if (file)
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+            reader.readAsDataURL(file); // Converts the file to a base64 string
+        });
+    else null
+}
