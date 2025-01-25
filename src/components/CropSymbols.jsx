@@ -3,15 +3,16 @@ import { FaTrash } from "react-icons/fa"; // FontAwesome trash icon
 const CropSymbols = ({croppedSymbols, addCroppedSymbol, removeCroppedSymbol}) =>{
 
     return (
-    <>
-        <h2 className="text-xl font-semibold mb-4">Cropped Symbols</h2>
-        <div className="grid grid-cols-2 items-center gap-2 mb-3 ">
-          <div className="item-center ">
-            <button  onClick={addCroppedSymbol}
-            className="text-white text-3xl  bg-blue-700 hover:bg-blue-800 focus:outline-none font-medium rounded-lg px-4 py-2 text-center inline-flex items-center">
-              +
-            </button>
-          </div>
+    <div >
+
+      <div className="flex flex-row gap-2 items-center pb-3 ">
+        <button  onClick={addCroppedSymbol}
+        className=" bg-blue-700 hover:bg-blue-800 text-white text-3xl focus:outline-none font-medium rounded-lg px-3  text-center inline-flex items-center">
+          +
+        </button>
+        <h2 className="text-xl font-semibold">Crop Symbol</h2>
+      </div>
+        <div className="grid grid-cols-3 items-center gap-2 mb-3  max-h-[30vh] overflow-y-auto pb-4">
           {croppedSymbols &&
           croppedSymbols.map((symbol, i) => (
             <div key={i} className="relative w-16 h-16">
@@ -32,7 +33,7 @@ const CropSymbols = ({croppedSymbols, addCroppedSymbol, removeCroppedSymbol}) =>
             </div>
           ))}
         </div>
-    </>
+    </div>
     )
 }
 

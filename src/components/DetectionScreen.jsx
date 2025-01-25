@@ -33,7 +33,7 @@ function DetectionScreen({ files }) {
         if (files.blueprint?.type == "application/pdf")
           blueprintImage = await pdfToImage(files.blueprint);
         else  
-        blueprintImage = await readImageAsBase64(files.blueprint)
+          blueprintImage = await readImageAsBase64(files.blueprint)
       
       if (blueprintImage == null) 
         blueprintImage = indexImage
@@ -98,42 +98,40 @@ function DetectionScreen({ files }) {
     {isLoading && <Spinner />}
     <div className="flex flex-row gap-4">
       <div>
-      <FeedbackPanel>
-        <CropSymbols croppedSymbols={croppedSymbols} addCroppedSymbol={addCroppedSymbol} removeCroppedSymbol={removeCroppedSymbol} />
-      </FeedbackPanel>
-      </div>
-        
-      <div>
-      <div className={"grid grid-cols-1 gap-4 py-2" + files.blueprint? "sm:grid-cols-2": " sm:grid-cols-1"}>
-        <div>
-          <label>Crop symbol from below Image (zoomable)</label>
-          <ImageCropper className="border-2" image={images.index} setCroppedImage={setCroppedSymbol} />
-        </div>
-
-        {files.blueprint && (
+        <FeedbackPanel>
           <div>
-                <label>Blueprint (zoomable)</label>
-                <ZoomableImage imageSrc={images.blueprint} />
-                {/* // <ImageCropper className="border-2" image={images.blueprint} setCroppedSymbol={setCroppedBlueprint} /> */}
-
+            <CropSymbols croppedSymbols={croppedSymbols} addCroppedSymbol={addCroppedSymbol} removeCroppedSymbol={removeCroppedSymbol} />
+            {croppedSymbol && <button className=" bg-blue-700 hover:bg-blue-800 text-white py-1 px-4 rounded-lg mt-2" onClick={handleDetect}>Detect</button>}
+            <hr className="py-2 mt-2"/>
           </div>
-        )}
+
+        </FeedbackPanel>
       </div>
 
-      <hr className="py-2 mt-2"/>
-     
-      {croppedSymbol && <button className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600" onClick={handleDetect}>Detect</button>}
-      
-      <hr className="py-2 mt-2"/>
-      {detectionResult && (
-        <div>
-          <p>Detected Symbols: {detectionResult.symbol_count}</p>
-          <ZoomableImage imageSrc={"data:image/png;base64,"+detectionResult.marked_image}  />
-          {/* Display coordinates or other feedback here */}
-        </div>
-      )}
+      <div className={"grid grid-cols-1 gap-4 py-6 sm:grid-cols-2"}>
+          <div>
+            <label className="text-xl font-semibold mb-4" >Select symbol</label>
+            <ImageCropper className="border-2" image={images.index} setCroppedImage={setCroppedSymbol} />
+          </div>
+
+          {files.blueprint && (
+            <div>
+              <label className="text-xl font-semibold mb-4">Blueprint</label>
+              <ZoomableImage imageSrc={images.blueprint} />
+              {/* // <ImageCropper className="border-2" image={images.blueprint} setCroppedSymbol={setCroppedBlueprint} /> */}
+
+            </div>
+          )}
+
+          {detectionResult && (
+            <div>
+              <h2 className="text-xl font-semibold mb-4">Detected Symbols: {detectionResult.symbol_count}</h2>
+              <ZoomableImage imageSrc={"data:image/png;base64,"+detectionResult.marked_image}  />
+              {/* Display coordinates or other feedback here */}
+            </div>
+          )}
       </div>
-      </div>
+    </div>
   </>
   );
 }

@@ -3,7 +3,7 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 const ZoomableImage = ({ imageSrc }) => {
   return (
-    <div className="w-full h-full">
+    <div className="w-full">
       <TransformWrapper>
             <TransformComponent>
               <img

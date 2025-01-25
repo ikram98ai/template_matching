@@ -14,7 +14,7 @@ const ImageCropper = ({ image, setCroppedImage }) => {
   return (
     <Cropper
       src={image}
-      style={{ height: "100%", width: "100%" }}
+      // style={{ height: "100%", width: "100%" }}
       initialAspectRatio={1}
       guides={true}
       dragMode="move"

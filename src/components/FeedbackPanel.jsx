@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Check, X, Edit2, AlertTriangle } from 'lucide-react';
+import {  Filter, Check, X, Edit2, AlertTriangle } from 'lucide-react';
 import axios from 'axios';
 
 const FeedbackPanel = ({children, selectedSymbol, onSymbolUpdate, onSymbolSelect }) => {
   const [symbols, setSymbols] = useState([]);
   const [filteredSymbols, setFilteredSymbols] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [editingSymbol, setEditingSymbol] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,18 +27,10 @@ const FeedbackPanel = ({children, selectedSymbol, onSymbolUpdate, onSymbolSelect
 
   useEffect(() => {
     filterSymbols();
-  }, [symbols, searchQuery, filterStatus]);
+  }, [symbols, filterStatus]);
 
   const filterSymbols = () => {
-    let filtered = [...symbols];
-
-    // Apply search filter
-    if (searchQuery) {
-      filtered = filtered.filter(symbol => 
-        symbol.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        symbol.id.toString().includes(searchQuery)
-      );
-    }
+    let filtered = [...symbols]
 
     // Apply status filter
     if (filterStatus !== 'all') {
@@ -204,23 +195,15 @@ const FeedbackPanel = ({children, selectedSymbol, onSymbolUpdate, onSymbolSelect
   };
 
   return (
-    <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
-     {children }
+    <div className="w-full sticky top-0 wx-auto max-w-md bg-white rounded-r-xl rounded-lg shadow-lg p-6 flex flex-col min-h-screen max-h-screen">
+      {children}
+  
+    {/* Symbol Feedback Section */}
+    <div className="flex-1 flex flex-col">
       <h2 className="text-xl font-semibold mb-4">Symbol Feedback</h2>
       
-      {/* Search and Filter */}
+      {/* Filter */}
       <div className="mb-4 space-y-3">
-        {/* <div className="relative">
-          <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search symbols..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border rounded-lg"
-          />
-        </div> */}
-
         <div className="flex items-center space-x-2">
           <Filter className="w-5 h-5 text-gray-400" />
           <select
@@ -235,9 +218,9 @@ const FeedbackPanel = ({children, selectedSymbol, onSymbolUpdate, onSymbolSelect
           </select>
         </div>
       </div>
-
+  
       {/* Symbol List */}
-      <div className="space-y-2 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto space-y-2">
         {isLoading ? (
           <div className="text-center py-4">Loading...</div>
         ) : filteredSymbols.length > 0 ? (
@@ -248,7 +231,7 @@ const FeedbackPanel = ({children, selectedSymbol, onSymbolUpdate, onSymbolSelect
           </div>
         )}
       </div>
-
+  
       {/* Summary */}
       <div className="mt-4 pt-4 border-t">
         <div className="flex gap-10 text-sm text-gray-600">
@@ -258,6 +241,7 @@ const FeedbackPanel = ({children, selectedSymbol, onSymbolUpdate, onSymbolSelect
         </div>
       </div>
     </div>
+  </div>
   );
 };
 

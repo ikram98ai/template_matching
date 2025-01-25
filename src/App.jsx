@@ -5,7 +5,7 @@ import DetectionScreen from "./components/DetectionScreen";
 function App() {
   const [files, setFiles] = useState({ index: null, blueprint: null });
   return (
-    <div className="p-4 mt-5">
+    <div className="">
       {files.index ? (
         <DetectionScreen files={files} />
       ) : (
