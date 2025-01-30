@@ -15,7 +15,7 @@ function DetectionScreen({ files }) {
   const [detectionResult, setDetectionResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedSymbol, setSelectedSymbol] = useState(null);
-
+  const [threshold, setThreshold] = useState(0.9);
  
   useEffect(() => {
     const convertPdfsToImages = async () => {
@@ -58,8 +58,9 @@ function DetectionScreen({ files }) {
 
 
       const payload = {
-        blueprint_image: images.blueprint,
+        blueprint: images.blueprint,
         symbols: croppedSymbols,
+        threshold: threshold
       };
   
       const response = await axios.post(
@@ -122,13 +123,18 @@ function DetectionScreen({ files }) {
                 croppedSymbols={croppedSymbols}
                 removeCroppedSymbol={removeCroppedSymbol}
               />
+
               {croppedSymbols && (
-                <button
-                  className=" bg-blue-700 hover:bg-blue-800 text-white py-1 px-4 rounded-lg mt-2"
-                  onClick={handleDetect}
-                >
-                  Detect
-                </button>
+                <>
+                  <label htmlFor="default-range" className="block text-sm font-medium text-gray-900 ">Threshold: {threshold}</label>
+                  <input id="default-range" type="range" value={threshold*100}  onChange={(e) => setThreshold(e.target.value/100)} className="w-full h-1 mb-6 bg-gray-200 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700"></input>
+                  <button
+                    className=" bg-blue-700 hover:bg-blue-800 text-white py-1 px-4 rounded-lg mt-2"
+                    onClick={handleDetect}
+                  >
+                    Detect
+                  </button>
+                </>
               )}
               <hr className="py-2 mt-2" />
             </div>

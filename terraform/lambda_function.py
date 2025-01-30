@@ -158,8 +158,11 @@ def lambda_handler(event, context):
         # Parse input from API Gateway
         body = json.loads(event['body'])
         print("BODY::",body.keys())
-        blueprint_bytes = body.get('blueprint_image', None)
+        blueprint_bytes = body.get('blueprint', None)
         symbols = body.get('symbols',None)
+        threshold = body.get('threshold',0.8)
+        print("THRESHOLD::", threshold, type(threshold))
+
         print("symbols::",symbols)
         if not blueprint_bytes or not symbols:
             raise ValueError("Blueprint and symbol images are required.")
@@ -179,7 +182,7 @@ def lambda_handler(event, context):
 
         symbols = new_symbols
         print("SYMBOLS::", symbols)
-        service = SymbolDetectionService()
+        service = SymbolDetectionService(threshold)
         # Detect symbols
         detected_symbols = service.detect_symbols( symbols,  blueprint_bytes )
         print("Detected symbols ::", detected_symbols)
