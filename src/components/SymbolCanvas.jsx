@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Stage, Layer, Line, Rect, Text } from 'react-konva';
 import { Button } from './Button';
-import { Crop, Move, Pen, Undo, Redo, Palette, Tag } from 'lucide-react';
+import { Pen, Undo, Redo} from 'lucide-react';
 
 const SymbolCanvas = ({ onSymbolAdd }) => {
   const [tool, setTool] = useState('pen');
@@ -119,11 +119,10 @@ const SymbolCanvas = ({ onSymbolAdd }) => {
 
     onSymbolAdd({
       image: dataUrl,
-      type: cropRect ? 'crop' : 'drawing',
-      dimensions: { width: exportRect.width, height: exportRect.height },
-      color: exportRect.color,
+      // type: cropRect ? 'crop' : 'drawing',
+      // dimensions: { width: exportRect.width, height: exportRect.height },
+      color:  exportRect.color,
       label: exportRect.label,
-      id: exportRect.id
     });
 
     setCropRect(null);

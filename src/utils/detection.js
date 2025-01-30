@@ -1,58 +1,8 @@
 import cv from "@techstark/opencv-js"
 
 
-
-// Update your hexToRgba function to return RGBA format
-const hexToRgba = (hex) => {
-    const cleanedHex = hex.replace(/^#/, '');
-    const expand = cleanedHex.length === 3;
-    
-    return new cv.Scalar(
-        parseInt(expand ? cleanedHex.slice(0,1).repeat(2) : cleanedHex.slice(0,2), 16), // R
-        parseInt(expand ? cleanedHex.slice(1,2).repeat(2) : cleanedHex.slice(2,4), 16), // G
-        parseInt(expand ? cleanedHex.slice(2,3).repeat(2) : cleanedHex.slice(4,6), 16), // B
-        255 // Alpha channel (fully opaque)
-    )
-  };
-
-  export const matToBase64 = (mat) => {
-    // Convert BGR to RGB format
-    const rgb = new cv.Mat();
-    cv.cvtColor(mat, rgb, cv.COLOR_BGR2RGB);
-  
-    // Create canvas and context
-    const canvas = document.createElement('canvas');
-    canvas.width = rgb.cols;
-    canvas.height = rgb.rows;
-    const ctx = canvas.getContext('2d');
-  
-    // Create ImageData object
-    const imageData = ctx.createImageData(rgb.cols, rgb.rows);
-    const data = new Uint8ClampedArray(rgb.data);
-    
-    // Convert to RGBA (add alpha channel)
-    const rgbaData = new Uint8ClampedArray(rgb.cols * rgb.rows * 4);
-    for (let i = 0; i < data.length; i += 3) {
-      rgbaData[i * 4/3] = data[i];         // R
-      rgbaData[i * 4/3 + 1] = data[i + 1]; // G
-      rgbaData[i * 4/3 + 2] = data[i + 2]; // B
-      rgbaData[i * 4/3 + 3] = 255;         // A (fully opaque)
-    }
-  
-    // Put image data to canvas
-    imageData.data.set(rgbaData);
-    ctx.putImageData(imageData, 0, 0);
-  
-    // Convert to base64
-    const base64 = canvas.toDataURL('image/png');
-  
-    // Cleanup OpenCV mats
-    rgb.delete();
-    
-    return base64;
-  };
-  
-  
+import { hexToRgba } from "./utils";
+ 
 
 // Symbol class definition using TypeScript-like structure
 class Symbol {
@@ -231,11 +181,7 @@ class SymbolDetectionService {
                             const confidence = result.floatAt(row, col);
                             if (confidence >= this.threshold) {
                                 counter += 1
-                                const roiRect = new cv.Rect(col, row, symbolWidth, symbolHeight);
-                                const symbolRegion = targetImg.roi(roiRect).clone();
-                                const symbolBase64 = matToBase64(symbolRegion);
-                                symbolRegion.delete(); // Important! Cleanup memory
-
+                              
 
                                 const symbolObj = new Symbol(
                                     symbol.label+`-${counter}`,
@@ -244,7 +190,7 @@ class SymbolDetectionService {
                                     [col + symbolWidth, row + symbolHeight],
                                     [col, row, symbolWidth, symbolHeight],
                                     symbol.color,
-                                    symbolBase64                                );
+                                 );
                                 detectedSymbols.push(symbolObj);
                             }
                         }

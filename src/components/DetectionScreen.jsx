@@ -6,7 +6,8 @@ import Spinner from "./Spinner";
 import FeedbackPanel from "./FeedbackPanel";
 import CropSymbols from "./CropSymbols";
 import SymbolCanvas from "./SymbolCanvas"
-import detectSymbolsInBlueprint from "../utils/detection";
+// import detectSymbolsInBlueprint from "../utils/detection";
+import axios from "axios";
 
 function DetectionScreen({ files }) {
   const [images, setImages] = useState({ index: null, blueprint: null });
@@ -14,11 +15,8 @@ function DetectionScreen({ files }) {
   const [detectionResult, setDetectionResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedSymbol, setSelectedSymbol] = useState(null);
-  const [drawnSymbols, setDrawnSymbols] = useState([]);
 
-  // Combine both cropped and drawn symbols
-  const allSymbols = [...croppedSymbols, ...drawnSymbols];
-
+ 
   useEffect(() => {
     const convertPdfsToImages = async () => {
       setIsLoading(true); // Start loading
@@ -57,11 +55,29 @@ function DetectionScreen({ files }) {
     setIsLoading(true); // Start loading
 
     try {
-      const result = await detectSymbolsInBlueprint(
-        images.blueprint,
-        croppedSymbols
+
+
+      const payload = {
+        blueprint_image: images.blueprint,
+        symbols: croppedSymbols,
+      };
+  
+      const response = await axios.post(
+        "https://syeyumufgh.execute-api.us-east-1.amazonaws.com/prod/detect", 
+        payload,
+        {
+          headers: { 
+            "Content-Type": "application/json"
+          }
+        }
       );
-      setDetectionResult(result);
+      setDetectionResult(response.data);
+
+      // const result = await detectSymbolsInBlueprint(
+      //   images.blueprint,
+      //   croppedSymbols
+      // );
+      // setDetectionResult(result);
     } catch (error) {
       console.error("Error calling detectSymbolsInBlueprint:", error);
       alert(error.message);
@@ -95,6 +111,7 @@ function DetectionScreen({ files }) {
       <div className="flex flex-row gap-4">
         <div>
           <FeedbackPanel
+            blueprintImg={images.blueprint}
             detectedSymbols={detectionResult?.detected_symbols}
             selectedSymbol={selectedSymbol}
             onSymbolSelect={setSelectedSymbol}

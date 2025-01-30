@@ -49,7 +49,6 @@ export default function ImageCropper({ image, setCroppedImage }) {
       image: croppedImage,
       label: symbolLabel,
       color,
-      id: Date.now().toString()
     });
     
     if (!label) setNextSymbolNumber(prev => prev + 1);
