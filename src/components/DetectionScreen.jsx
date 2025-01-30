@@ -8,6 +8,7 @@ import CropSymbols from "./CropSymbols";
 import SymbolCanvas from "./SymbolCanvas"
 // import detectSymbolsInBlueprint from "../utils/detection";
 import axios from "axios";
+import { Button } from "./Button";
 
 function DetectionScreen({ files }) {
   const [images, setImages] = useState({ index: null, blueprint: null });
@@ -106,6 +107,7 @@ function DetectionScreen({ files }) {
     );
   };
 
+
   return (
     <>
       {isLoading && <Spinner />}
@@ -123,19 +125,25 @@ function DetectionScreen({ files }) {
                 croppedSymbols={croppedSymbols}
                 removeCroppedSymbol={removeCroppedSymbol}
               />
+              <label htmlFor="default-range" className="block text-sm font-medium text-gray-900 ">Threshold: {threshold}</label>
+              <input id="default-range" type="range" value={threshold*100}  onChange={(e) => setThreshold(e.target.value/100)} className="w-full h-1 mb-6 bg-gray-200 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700"></input>
+              <div className="flex justify-between">
+                <Button
+                  disabled={croppedSymbols.length <= 0}
+                  onClick={handleDetect}
+                  variant="outline"
+                  size="sm" >
+                  Detect
+                </Button>
+                <Button
+                  disabled={detectionResult?.detected_symbols == null}
+                  onClick={() => setDetectionResult(null)} // Instead of null
+                  variant="outline"
+                  size="sm" >
+                  Clear
+                </Button>
 
-              {croppedSymbols && (
-                <>
-                  <label htmlFor="default-range" className="block text-sm font-medium text-gray-900 ">Threshold: {threshold}</label>
-                  <input id="default-range" type="range" value={threshold*100}  onChange={(e) => setThreshold(e.target.value/100)} className="w-full h-1 mb-6 bg-gray-200 rounded-lg appearance-none cursor-pointer range-sm dark:bg-gray-700"></input>
-                  <button
-                    className=" bg-blue-700 hover:bg-blue-800 text-white py-1 px-4 rounded-lg mt-2"
-                    onClick={handleDetect}
-                  >
-                    Detect
-                  </button>
-                </>
-              )}
+              </div>
               <hr className="py-2 mt-2" />
             </div>
           </FeedbackPanel>

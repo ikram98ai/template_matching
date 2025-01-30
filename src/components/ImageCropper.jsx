@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
+import { Button } from './Button';
 
 export default function ImageCropper({ image, setCroppedImage }) {
   const [crop, setCrop] = useState(null);
@@ -105,13 +106,13 @@ export default function ImageCropper({ image, setCroppedImage }) {
           onChange={(e) => setColor(e.target.value)}
           className="w-4 h-8"
         />
-        
-        <button
+        <Button
           onClick={() => handleCropComplete(crop)}
-          className="bg-blue-500 text-white px-4 py-1 rounded"
+          variant="outline"
         >
           Crop
-        </button>
+        </Button>
+      
       </div>
     </div>
   );
