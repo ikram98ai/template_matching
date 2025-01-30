@@ -17,7 +17,8 @@ function DetectionScreen({ files }) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedSymbol, setSelectedSymbol] = useState(null);
   const [threshold, setThreshold] = useState(0.9);
- 
+  const [nextSymbolNumber, setNextSymbolNumber] = useState(1);
+
   useEffect(() => {
     const convertPdfsToImages = async () => {
       setIsLoading(true); // Start loading
@@ -155,12 +156,13 @@ function DetectionScreen({ files }) {
             <ImageCropper
               className="border-2"
               image={images.index}
-              setCroppedImage={addCroppedSymbol}
+              setCroppedImage={addCroppedSymbol} 
+              nextSymbolNumber={nextSymbolNumber} setNextSymbolNumber={setNextSymbolNumber}
             />
           </div>
           <div>
             <label className="text-xl font-semibold mb-4">Draw symbol</label>
-            <SymbolCanvas onSymbolAdd={addCroppedSymbol} />
+            <SymbolCanvas nextSymbolNumber={nextSymbolNumber} setNextSymbolNumber={setNextSymbolNumber} onSymbolAdd={addCroppedSymbol} />
           </div>
 
           {files.blueprint && (

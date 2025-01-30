@@ -3,11 +3,10 @@ import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { Button } from './Button';
 
-export default function ImageCropper({ image, setCroppedImage }) {
+export default function ImageCropper({ nextSymbolNumber, setNextSymbolNumber, image, setCroppedImage }) {
   const [crop, setCrop] = useState(null);
   const [label, setLabel] = useState('');
   const [color, setColor] = useState('#ff0000');
-  const [nextSymbolNumber, setNextSymbolNumber] = useState(1);
   const imageRef = useRef(null);
   const [scaleFactor, setScaleFactor] = useState(1);
 

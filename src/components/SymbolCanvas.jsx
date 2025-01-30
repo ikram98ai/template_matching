@@ -3,7 +3,7 @@ import { Stage, Layer, Line, Rect, Text } from 'react-konva';
 import { Button } from './Button';
 import { Pen, Undo, Redo} from 'lucide-react';
 
-const SymbolCanvas = ({ onSymbolAdd }) => {
+const SymbolCanvas = ({ nextSymbolNumber, setNextSymbolNumber, onSymbolAdd }) => {
   const [tool, setTool] = useState('pen');
   const [lines, setLines] = useState([]);
   const [cropRect, setCropRect] = useState(null);
@@ -12,7 +12,6 @@ const SymbolCanvas = ({ onSymbolAdd }) => {
   const [historyStep, setHistoryStep] = useState(0);
   const [selectedColor, setSelectedColor] = useState('#FF0000');
   const [label, setLabel] = useState('');
-  
   const stageRef = useRef(null);
   const isDrawing = useRef(false);
   const symbolCounter = useRef(1);
@@ -116,15 +115,16 @@ const SymbolCanvas = ({ onSymbolAdd }) => {
       height: exportRect.height,
       pixelRatio: 2
     });
+    console.log("running")
 
+    console.log("Label:",exportRect.label || `symbol${nextSymbolNumber}`)
     onSymbolAdd({
       image: dataUrl,
-      // type: cropRect ? 'crop' : 'drawing',
-      // dimensions: { width: exportRect.width, height: exportRect.height },
       color:  exportRect.color,
-      label: exportRect.label,
+      label:  exportRect.label || `symbol${nextSymbolNumber}` ,
     });
-
+    if (!exportRect.label ) setNextSymbolNumber(prev => prev + 1);
+    console.log(`symbol${nextSymbolNumber}`)
     setCropRect(null);
     setLines([]);
     setLabel('');
