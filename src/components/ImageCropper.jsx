@@ -39,10 +39,10 @@ export default function ImageCropper({ nextSymbolNumber, setNextSymbolNumber, im
     return canvas.toDataURL('image/png');
   };
 
-  const handleCropComplete = async (crop) => {
+  const handleCrop = async () => {
     if (!image || !crop.width || !crop.height) return;
 
-    const croppedImage = await getCroppedImg(image, crop);
+    const croppedImage = await getCroppedImg();
     const symbolLabel = label || `symbol${nextSymbolNumber}`;
     
     setCroppedImage({
@@ -53,6 +53,7 @@ export default function ImageCropper({ nextSymbolNumber, setNextSymbolNumber, im
     
     if (!label) setNextSymbolNumber(prev => prev + 1);
     setLabel('');
+    setCrop(null);
   };
 
   return (
@@ -90,28 +91,29 @@ export default function ImageCropper({ nextSymbolNumber, setNextSymbolNumber, im
         )}
       </div> */}
 
-      <div className="flex gap-4 items-center">
+      <div className="flex flex-col sm:flex-row gap-4 items-center">
         <input
           type="text"
           placeholder="Label (e.g. resistor)"
           value={label}
           onChange={(e) => setLabel(e.target.value)}
-          className="flex-1 p-1 border rounded"
+          className="flex-1 p-1 border rounded w-full"
         />
         
-        <input
-          type="color"
-          value={color}
-          onChange={(e) => setColor(e.target.value)}
-          className="w-4 h-8"
-        />
-        <Button
-          onClick={() => handleCropComplete(crop)}
-          variant="outline"
-        >
-          Crop
-        </Button>
-      
+        <div className="flex gap-4 items-center">
+          <input
+            type="color"
+            value={color}
+            onChange={(e) => setColor(e.target.value)}
+            className="w-8 h-8"
+          />
+          <Button
+            onClick={handleCrop}
+            variant="outline"
+          >
+            Crop
+          </Button>
+        </div>
       </div>
     </div>
   );

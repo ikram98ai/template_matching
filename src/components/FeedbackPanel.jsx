@@ -7,6 +7,7 @@ const FeedbackPanel = ({
   detectedSymbols=[],
   blueprintImg,
   selectedSymbol,
+  onSymbolSelect,
   onSymbolUpdate,
   children 
 }) => {
@@ -88,6 +89,7 @@ const FeedbackPanel = ({
       key={symbol.id}
       className={`p-4 border rounded-lg mb-2 ${symbol.status === 'verified' ? 'bg-green-50' : (symbol.status === 'rejected' ?'bg-red-50':"")}`}
       style={{ borderColor: symbol.color }}
+      onClick={() => onSymbolSelect(symbol)}
     >
       <div className="flex items-center gap-4">
         {symbolImages[symbol.id] ? (

@@ -13,8 +13,25 @@ const SymbolCanvas = ({ nextSymbolNumber, setNextSymbolNumber, onSymbolAdd }) =>
   const [selectedColor, setSelectedColor] = useState('#FF0000');
   const [label, setLabel] = useState('');
   const stageRef = useRef(null);
+  const containerRef = useRef(null);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const isDrawing = useRef(false);
   const symbolCounter = useRef(1);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current) {
+        setDimensions({
+          width: containerRef.current.offsetWidth,
+          height: 400, // Keep height fixed or make it responsive as well
+        });
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // History management
   const updateHistory = useCallback((newLines) => {
@@ -152,7 +169,7 @@ const SymbolCanvas = ({ nextSymbolNumber, setNextSymbolNumber, onSymbolAdd }) =>
   };
 
   return (
-    <div className="border rounded-lg p-4 bg-white shadow-sm">
+    <div className="border rounded-lg p-4 bg-white shadow-sm" ref={containerRef}>
       <div className="flex gap-2 mb-4 flex-wrap">
         <div className="flex gap-2 items-center">
           <Button
@@ -232,8 +249,8 @@ const SymbolCanvas = ({ nextSymbolNumber, setNextSymbolNumber, onSymbolAdd }) =>
 
       <Stage
         ref={stageRef}
-        width={600}
-        height={400}
+        width={dimensions.width}
+        height={dimensions.height}
         onMouseDown={tool === 'crop' ? handleCropStart : handleMouseDown}
         onMousemove={tool === 'crop' ? handleCropMove : handleMouseMove}
         onMouseup={tool === 'crop' ? () => {} : handleMouseUp}

@@ -6,8 +6,7 @@ import Spinner from "./Spinner";
 import FeedbackPanel from "./FeedbackPanel";
 import CropSymbols from "./CropSymbols";
 import SymbolCanvas from "./SymbolCanvas"
-// import detectSymbolsInBlueprint from "../utils/detection";
-import axios from "axios";
+import detectSymbolsInBlueprint from "../utils/detection";
 import { Button } from "./Button";
 
 function DetectionScreen({ files }) {
@@ -18,6 +17,7 @@ function DetectionScreen({ files }) {
   const [selectedSymbol, setSelectedSymbol] = useState(null);
   const [threshold, setThreshold] = useState(0.9);
   const [nextSymbolNumber, setNextSymbolNumber] = useState(1);
+  const [activeTab, setActiveTab] = useState('select');
 
   useEffect(() => {
     const convertPdfsToImages = async () => {
@@ -65,22 +65,13 @@ function DetectionScreen({ files }) {
         threshold: threshold
       };
   
-      const response = await axios.post(
-        "https://syeyumufgh.execute-api.us-east-1.amazonaws.com/prod/detect", 
-        payload,
-        {
-          headers: { 
-            "Content-Type": "application/json"
-          }
-        }
-      );
-      setDetectionResult(response.data);
 
-      // const result = await detectSymbolsInBlueprint(
-      //   images.blueprint,
-      //   croppedSymbols
-      // );
-      // setDetectionResult(result);
+
+      const result = await detectSymbolsInBlueprint(
+        images.blueprint,
+        croppedSymbols
+      );
+      setDetectionResult(result);
     } catch (error) {
       console.error("Error calling detectSymbolsInBlueprint:", error);
       alert(error.message);
@@ -112,7 +103,7 @@ function DetectionScreen({ files }) {
   return (
     <>
       {isLoading && <Spinner />}
-      <div className="flex flex-row gap-4">
+      <div className="flex flex-col md:flex-row gap-4">
         <div>
           <FeedbackPanel
             blueprintImg={images.blueprint}
@@ -152,17 +143,24 @@ function DetectionScreen({ files }) {
 
         <div className={"grid grid-cols-1 gap-4 py-6 sm:grid-cols-2"}>
           <div>
-            <label className="text-xl font-semibold mb-4">Select symbol</label>
-            <ImageCropper
-              className="border-2"
-              image={images.index}
-              setCroppedImage={addCroppedSymbol} 
-              nextSymbolNumber={nextSymbolNumber} setNextSymbolNumber={setNextSymbolNumber}
-            />
-          </div>
-          <div>
-            <label className="text-xl font-semibold mb-4">Draw symbol</label>
-            <SymbolCanvas nextSymbolNumber={nextSymbolNumber} setNextSymbolNumber={setNextSymbolNumber} onSymbolAdd={addCroppedSymbol} />
+            <div className="flex gap-2 mb-4">
+              <Button onClick={() => setActiveTab('select')} variant={activeTab === 'select' ? 'default' : 'outline'}>
+                Select Symbol
+              </Button>
+              <Button onClick={() => setActiveTab('draw')} variant={activeTab === 'draw' ? 'default' : 'outline'}>
+                Draw Symbol
+              </Button>
+            </div>
+            {activeTab === 'select' ? (
+              <ImageCropper
+                className="border-2"
+                image={images.index}
+                setCroppedImage={addCroppedSymbol} 
+                nextSymbolNumber={nextSymbolNumber} setNextSymbolNumber={setNextSymbolNumber}
+              />
+            ) : (
+              <SymbolCanvas nextSymbolNumber={nextSymbolNumber} setNextSymbolNumber={setNextSymbolNumber} onSymbolAdd={addCroppedSymbol} />
+            )}
           </div>
 
           {files.blueprint && (
